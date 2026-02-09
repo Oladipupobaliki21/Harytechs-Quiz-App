@@ -51,7 +51,93 @@ const quizData = [
   { question: "Which method removes an element?", options: ["remove()", "delete()", "clear()", "All of the above"], answer: 0 },
   { question: "Which event occurs when page loads?", options: ["onload", "onready", "DOMContentLoaded", "All of the above"], answer: 3 },
   { question: "Which method gets element by ID?", options: ["getElementById()", "querySelector()", "getElementsByClassName()", "select()"], answer: 0 },
-  { question: "Which method gets elements by class?", options: ["getElementsByClassName()", "querySelectorAll()", "getElementById()", "select()"], answer: 0 }
+  { question: "Which method gets elements by class?", options: ["getElementsByClassName()", "querySelectorAll()", "getElementById()", "select()"], answer: 0 },
+
+  { question: "Which method gets elements by tag?", options: ["getElementsByTagName()", "querySelectorAll()", "getElementById()", "select()"], answer: 0 },
+  { question: "Which method adds a class to an element?", options: ["addClass()", "classList.add()", "setAttribute()", "All of the above"], answer: 1 },
+  { question: "Which method removes a class from an element?", options: ["removeClass()", "classList.remove()", "setAttribute()", "All of the above"], answer: 1 },
+  { question: "Which method toggles a class on an element?", options: ["toggleClass()", "classList.toggle()", "setAttribute()", "All of the above"], answer: 1 }, 
+  { question: "Which method checks if element has a class?", options: ["hasClass()", "classList.contains()", "getAttribute()", "All of the above"], answer: 1 }
+  
 ];
+
+
+
+  let currentQuestion = 0;
+  let score = 0;
+  let timeLeft = 15;
+  let timer;
+
+
+  const questionEl = document.getElementById("question");
+  const nextBtnEl = document.getElementById("nextBtn");
+  const timerEl = document.getElementById("timer");
+  const progressEl = document.getElementById("progress");
+  const optionsEl = document.querySelectorAll('.option');
+  // const optionBtns = document.querySelectorAll(".option");
+
+
+  function loadQuestion(){
+    clearInterval(timer);
+    timeLeft = 15;
+    timerEl.textContent = `Time Left: ${timeLeft}`;
+    let current = quizData[currentQuestion];
+    questionEl.textContent = current.question;
+    progressEl.textContent = `${currentQuestion + 1} of ${quizData.length} Question`;
+
+    optionsEl.forEach((btn, i) => {
+    btn.textContent = current.options[i];
+    btn.className = "option";
+    btn.disabled = false;
+    btn.onclick = () => selectAnswer(i);
+  });
+  startTimer();
+  }
+
+  function startTimer() {
+  timer = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = `Time Left: ${timeLeft}`;
+
+    if (timeLeft === 0) {
+      clearInterval(timer);
+      nextQuestion();
+    }
+  }, 1000);
+}
+
+function selectAnswer(index) {
+  clearInterval(timer);
+  optionsEl.forEach(btn => btn.disabled = true);
+
+  if (index === quizData[currentQuestion].answer) {
+    score++;
+    optionsEl[index].classList.add("correct");
+  } else {
+    optionsEl[index].classList.add("wrong");
+    optionsEl[quizData[currentQuestion].answer].classList.add("correct");
+  }
+}
+function nextQuestion() {
+  currentQuestion++;
+
+  if (currentQuestion < quizData.length) {
+    loadQuestion();
+  } else {
+    showResult();
+  }
+}
+
+nextBtnEl.addEventListener("click", nextQuestion);
+
+function showResult() {
+  questionEl.textContent = "Quiz Completed 🎉";
+  document.querySelector(".options").innerHTML =
+    `<h3>Your Score: ${score} / ${quizData.length}</h3>`;
+  timerEl.style.display = "none";
+  nextBtnEl.style.display = "none";
+}
+loadQuestion();
+
 
 
