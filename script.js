@@ -65,11 +65,11 @@ const quizData = [
 
   let currentQuestion = 0;
   let score = 0;
-  // let timeLeft = 15;
-  let totalTime = 1200;
-  let quizTimer;
   
-  // let timer;
+    const TOTAL_DURATION = 20 * 60;
+  let totalTimeLeft = TOTAL_DURATION;
+   let quizTimer = null;
+
 
   const startScreen = document.getElementById("startScreen");
   const startBtn = document.getElementById("startBtn");
@@ -79,20 +79,19 @@ const quizData = [
   const timerEl = document.getElementById("timer");
   const progressEl = document.getElementById("progress");
   const optionsEl = document.querySelectorAll('.option');
-  const totalDuration = 600;
-  // const optionBtns = document.querySelectorAll(".option");
+
+
 
   startBtn.addEventListener("click", function(){
     startScreen.style.display = "none";
     quizBox.style.display ="block";
     loadQuestion();
+    startQuizTimer();
   })
 
 
   function loadQuestion(){
-    clearInterval(quizTimer);
-    timeLeft = 20;
-    timerEl.textContent = `Time Left: ${timeLeft}`;
+ 
     let current = quizData[currentQuestion];
     questionEl.textContent = current.question;
     progressEl.textContent = `${currentQuestion + 1} of ${quizData.length} Question`;
@@ -103,27 +102,30 @@ const quizData = [
     btn.disabled = false;
     btn.onclick = () => selectAnswer(i);
   });
-  startQuizTimer();
+ 
   }
 
 function startQuizTimer() {
+  
+  if (quizTimer !== null) return;
+
   quizTimer = setInterval(() => {
-    totalTime--;
+    totalTimeLeft--;
 
-    let minutes = Math.floor(totalTime / 60);
-    let seconds = totalTime % 60;
+     const minutes = Math.floor(totalTimeLeft / 60);
+    const seconds = totalTimeLeft % 60;
+    
+    timerEl.textContent = `Time Left: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    const percentage = (totalTimeLeft / TOTAL_DURATION) * 100;
+    progressBar.style.width = `${percentage}%`;
 
-    timerEl.textContent = `Time Left: ${minutes}:${seconds < 20 ? "0" : ""}${seconds}`;
-
-    updateProgressBar();
-
-    if (totalTime <= 0) {
+    if (totalTimeLeft <= 0) {
       clearInterval(quizTimer);
+      quizTimer = null;
       showResult();
     }
   }, 1000);
 }
-
 
 function updateProgressBar() {
   const percent = (totalTime / totalDuration) * 100;
@@ -132,7 +134,7 @@ function updateProgressBar() {
 
 
 function selectAnswer(index) {
-  clearInterval(quizTimer);
+ 
   optionsEl.forEach(btn => btn.disabled = true);
 
   if (index === quizData[currentQuestion].answer) {
@@ -163,7 +165,7 @@ function showResult() {
   nextBtnEl.style.display = "none";
 }
 
-// loadQuestion();
+
 
 
 
