@@ -133,3 +133,54 @@ body {
 }
 
 
+
+@media (max-width: 600px) {
+  .start-screen,
+  .quiz-box {
+    width: 90%;        
+    height: auto;      
+    padding: 20px;}
+
+  .start-screen h1 {
+    font-size: 24px;  
+  }
+
+  .start-screen h2 {
+    font-size: 18px;   
+  }
+
+  .start-screen p {
+    font-size: 16px;   
+  }
+
+  .quiz-footer {
+    flex-direction: column; 
+    gap: 8px;
+  }
+
+  .quiz-footer button {
+    width: 100%;       
+    text-align: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .start-screen h1 {
+    font-size: 20px; 
+  }
+
+  .start-screen h2 {
+    font-size: 16px; 
+  }
+
+  .start-screen p {
+    font-size: 14px; 
+  }
+
+  #startBtn,
+  .quiz-footer button,
+  #restartBtn {
+    padding: 8px 12px; 
+    font-size: 14px;
+  }
+}
