@@ -14,7 +14,42 @@ body {
   justify-content: center;
   align-items: center;
 }
+/* .start-screen{
+  background: white;
+  padding: 25px;
+  width: 400px;
+  border-radius: 5px;
+  text-align: center;
+} */
 
+.start-screen {
+  background: linear-gradient(270deg, #007bff, #6610f2, #20c997);
+  background-size: 600% 600%;
+  animation: gradientBG 8s ease infinite;
+  color: white;
+  padding: 30px;
+  width: 400px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+#startBtn{
+  background: #007bff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+
+}
+#quizBox{
+  display: none;
+}
 .quiz-box {
   background: white;
   width: 500px;
