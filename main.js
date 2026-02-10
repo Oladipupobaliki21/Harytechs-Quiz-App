@@ -59,62 +59,105 @@ const quizData = [
   { question: "Which method toggles a class on an element?", options: ["toggleClass()", "classList.toggle()", "setAttribute()", "All of the above"], answer: 1 }, 
   { question: "Which method checks if element has a class?", options: ["hasClass()", "classList.contains()", "getAttribute()", "All of the above"], answer: 1 }
   
-]; 
-
-let currentQuestion = 0;
-let score = 0;
-const TOTAL_DURATION = 10 * 60;
-let totalTimeLeft = TOTAL_DURATION;
-let quizTimer = null;
-let userAnswers = new Array(quizData.length).fill(null);
+];
 
 
-const startBtn = document.getElementById("startBtn");
-const startScreen = document.getElementById("startScreen");
-const quizBox = document.getElementById("quizBox");
-const questionEl = document.getElementById("question");
-const nextBtnEl = document.getElementById("nextBtn");
-const prevBtn = document.getElementById("prevBtn");
-const submitBtn = document.getElementById("submitBtn");
-const timerEl = document.getElementById("timer");
-const progressEl = document.getElementById("progress");
-let optionsEl = document.querySelectorAll(".option"); 
-const progressBar = document.getElementById("progressBar"); 
+
+  let currentQuestion = 0;
+  let score = 0;
+  
+  const TOTAL_DURATION = 10 * 60;
+  let totalTimeLeft = TOTAL_DURATION;
+  let quizTimer = null;
+  let userAnswers = new Array(quizData.length).fill(null);
 
 
-startBtn.addEventListener("click", () => {
-  startScreen.style.display = "none";
-  quizBox.style.display = "block";
-  loadQuestion();
-  startQuizTimer();
-});
+  // const startScreen = document.getElementById("startScreen");
+  // const startBtn = document.getElementById("startBtn");
+  // const quizBox = document.getElementById("quizBox");
+  // const questionEl = document.getElementById("question");
+  // const nextBtnEl = document.getElementById("nextBtn");
+  // const prevBtn = document.getElementById("prevBtn");
+  // const submitBtn = document.getElementById("submitBtn");
+  // const timerEl = document.getElementById("timer");
+  // const progressEl = document.getElementById("progress");
+  // const optionsEl = document.querySelectorAll('.option');
 
-nextBtnEl.addEventListener("click", nextQuestion);
-prevBtn.addEventListener("click", () => {
-  if (currentQuestion > 0) {
-    currentQuestion--;
+
+  document.addEventListener("DOMContentLoaded", () => {
+  const startBtn = document.getElementById("startBtn");
+  const startScreen = document.getElementById("startScreen");
+  const quizBox = document.getElementById("quizBox");
+  const questionEl = document.getElementById("question");
+  const nextBtnEl = document.getElementById("nextBtn");
+  const prevBtn = document.getElementById("prevBtn");
+  const submitBtn = document.getElementById("submitBtn");
+  const timerEl = document.getElementById("timer");
+  const progressEl = document.getElementById("progress");
+  const optionsEl = document.querySelectorAll(".option");
+
+  startBtn.addEventListener("click", function() {
+    startScreen.style.display = "none";
+    quizBox.style.display = "block";
     loadQuestion();
-  }
+    startQuizTimer();
+  });
+
+  nextBtnEl.addEventListener("click", nextQuestion);
+  prevBtn.addEventListener("click", () => {
+    if (currentQuestion > 0) {
+      currentQuestion--;
+      loadQuestion();
+    }
+  });
+
+  submitBtn.addEventListener("click", showResult);
 });
-submitBtn.addEventListener("click", showResult);
 
 
-function loadQuestion() {
-  const current = quizData[currentQuestion];
-  questionEl.textContent = current.question;
-  progressEl.textContent = `${currentQuestion + 1} of ${quizData.length} Questions`;
 
 
-  optionsEl = document.querySelectorAll(".option");
 
-  optionsEl.forEach((btn, i) => {
+ 
+
+
+  function loadQuestion(){
+    let current = quizData[currentQuestion];
+    questionEl.textContent = current.question;
+    progressEl.textContent = `${currentQuestion + 1} of ${quizData.length} Question`;
+
+    optionsEl.forEach((btn, i) => {
     btn.textContent = current.options[i];
     btn.className = "option";
     btn.disabled = false;
     btn.onclick = () => selectAnswer(i);
   });
-
   prevBtn.disabled = currentQuestion === 0;
+  }
+
+
+function startQuizTimer() {
+  if (quizTimer !== null) return;
+
+  quizTimer = setInterval(() => {
+    totalTimeLeft--;
+    const minutes = Math.floor(totalTimeLeft / 60);
+    const seconds = totalTimeLeft % 60;
+    timerEl.textContent = `Time Left: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+    const percentage = (totalTimeLeft / TOTAL_DURATION) * 100;
+    progressBar.style.width = `${percentage}%`;
+
+    if (totalTimeLeft <= 0) {
+      clearInterval(quizTimer);
+      quizTimer = null;
+      showResult();
+    }
+  }, 1000);
+}
+
+function updateProgressBar() {
+  const percent = (totalTime / totalDuration) * 100;
+  progressBar.style.width = `${percent}%`;
 }
 
 function selectAnswer(index) {
@@ -128,12 +171,12 @@ function selectAnswer(index) {
     optionsEl[index].classList.add("wrong");
     optionsEl[quizData[currentQuestion].answer].classList.add("correct");
   }
-
+  
   checkIfAllAnswered();
 }
-
 function nextQuestion() {
   currentQuestion++;
+
   if (currentQuestion < quizData.length) {
     loadQuestion();
   } else {
@@ -141,49 +184,48 @@ function nextQuestion() {
   }
 }
 
-function startQuizTimer() {
-  if (quizTimer !== null) return;
+nextBtnEl.addEventListener("click", nextQuestion);
 
-  quizTimer = setInterval(() => {
-    totalTimeLeft--;
-    const minutes = Math.floor(totalTimeLeft / 60);
-    const seconds = totalTimeLeft % 60;
-    timerEl.textContent = `Time Left: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-
-    const percentage = (totalTimeLeft / TOTAL_DURATION) * 100;
-    progressBar.style.width = `${percentage}%`;
-
-    if (totalTimeLeft <= 0) {
-      clearInterval(quizTimer);
-      quizTimer = null;
-      showResult();
-    }
-  }, 1000);
-}
-
-function checkIfAllAnswered() {
-  submitBtn.disabled = !userAnswers.every(ans => ans !== null);
-}
 
 function showResult() {
   questionEl.textContent = "Quiz Completed 🎉";
-  document.querySelector(".options").innerHTML = `
-    <h3>Your Score: ${score} / ${quizData.length}</h3>
+  document.querySelector(".options").innerHTML =
+    `<h3>Your Score: ${score} / ${quizData.length}</h3>
     <button id="restartBtn">Restart Quiz</button>
-  `;
+    `;  
   timerEl.style.display = "none";
   nextBtnEl.style.display = "none";
   prevBtn.style.display = "none";
   submitBtn.style.display = "none";
 
-  document.getElementById("restartBtn").addEventListener("click", restartQuiz);
+ document.getElementById("restartBtn").addEventListener("click", restartQuiz);
 }
+
+
+
+prevBtn.addEventListener("click", () => {
+  if (currentQuestion > 0) {
+    currentQuestion--;
+    loadQuestion();
+  }
+});
+
+submitBtn.addEventListener("click", () => {
+  showResult();
+});
+
+
+function checkIfAllAnswered() {
+  const allAnswered = userAnswers.every(ans => ans !== null);
+  submitBtn.disabled = !allAnswered;
+}
+
 
 function restartQuiz() {
   currentQuestion = 0;
   score = 0;
   totalTimeLeft = TOTAL_DURATION;
-  userAnswers.fill(null);
+   userAnswers.fill(null);
 
   timerEl.style.display = "block";
   nextBtnEl.style.display = "block";
@@ -191,15 +233,18 @@ function restartQuiz() {
   submitBtn.style.display = "block";
   submitBtn.disabled = true;
 
-  document.querySelector(".options").innerHTML = `
+  document.querySelector(".option").innerHTML = `
     <button class="option"></button>
     <button class="option"></button>
     <button class="option"></button>
     <button class="option"></button>
   `;
 
-  optionsEl = document.querySelectorAll(".option"); 
   quizTimer = null;
   startQuizTimer();
   loadQuestion();
 }
+
+
+
+

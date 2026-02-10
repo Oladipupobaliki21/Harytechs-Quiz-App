@@ -7,16 +7,17 @@
 </head>
 <body>
   <div id="startScreen" class="start-screen">
-    <h1>Hey Kiddo!</h1>
-    <h2>Welcome to Harytechs Quiz Game ! 👋</h2>
-    <p>You have 20 minutes for all questions</p>
+    <h1>Hi, Tech Gurus !</h1>
+    <h2>Welcome to Harytechs Quiz Game !👋</h2>
+    <p>You have 10 minutes for all questions</p>
     <button id="startBtn">Start Quiz</button>
+      <p>Wishing you luck !🎉</p>
   </div>
 
   <div  id="quizBox" class="quiz-box">
     <div class="quiz-header"> 
       <h3>Harytechs Quiz Game !</h3>
-      <span id="timer">Time Left: 20</span>
+      <span id="timer">Time Left: 10</span>
     </div>
 
     <h4 id="question">Question text</h4>
@@ -30,12 +31,17 @@
 
     <div class="quiz-footer">
       <span id="progress">1 of 50 Questions</span>
+      <button id="prevBtn">Previous</button>
       <button id="nextBtn">Next</button>
+      <button id="submitBtn" disabled>Submit</button>
       <button id="restartBtn" style="display:none;">Restart Quiz</button>
+      <div id="progressBar"></div>
+
 
     </div>
   </div>
 
-  <script src="script.js"></script>
+  
 </body>
+<script src="script.js"></script>
 </html>
